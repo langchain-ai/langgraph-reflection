@@ -1,0 +1,19 @@
+[project]
+name = "langgraph-reflexion"
+version = "0.0.1"
+description = "LangGraph agent that runs a reflection step"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = ["langgraph"]
+authors = [{name = "Harrison Chase"}]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.uv.sources]
+langgraph-reflexion = { workspace = true }
+
+[dependency-groups]
+dev = [
+    "langgraph-reflexion",
+]
