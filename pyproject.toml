@@ -1,5 +1,5 @@
 [project]
-name = "langgraph-reflexion"
+name = "langgraph-reflection"
 version = "0.0.1"
 description = "LangGraph agent that runs a reflection step"
 readme = "README.md"
@@ -15,5 +15,5 @@ langgraph-reflexion = { workspace = true }
 
 [dependency-groups]
 dev = [
-    "langgraph-reflexion",
+    "langgraph-reflection",
 ]
