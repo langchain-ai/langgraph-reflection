@@ -1,8 +1,15 @@
+"""Example of LLM as a judge reflection system.
+
+Should install:
+
+```
+pip install langgraph-reflection langchain
+```
+"""
 from langgraph_reflection import create_reflection_graph
 from langchain.chat_models import init_chat_model
 from langgraph.graph import StateGraph, MessagesState, START, END
-from typing import TypedDict, Annotated, Literal
-import json
+from typing import TypedDict
 
 
 # Define the main assistant model that will generate responses

@@ -1,4 +1,11 @@
-"""Example of a LangGraph application with code reflection capabilities using Pyright."""
+"""Example of a LangGraph application with code reflection capabilities using Pyright.
+
+Should install:
+
+```
+pip install langgraph-reflection langchain pyright
+```
+"""
 
 from typing import TypedDict, Annotated, Literal
 import json

@@ -41,6 +41,13 @@ In this example, the reflection agent uses another LLM to judge its output. The 
 4. Helpfulness - Does it provide actionable and useful information?
 5. Safety - Does it avoid harmful or inappropriate content?
 
+
+Installation:
+
+```
+pip install langgraph-reflection langchain
+```
+
 Example usage:
 ```python
 # Define the main assistant graph
@@ -77,6 +84,12 @@ This example demonstrates how to use the reflection agent to validate and improv
 3. Validates the code using Pyright
 4. If errors are found, sends them back to the main agent for correction
 5. Repeats until the code passes validation
+
+Installation:
+
+```
+pip install langgraph-reflection langchain pyright
+```
 
 Example usage:
 ```python
