@@ -80,8 +80,8 @@ judge_graph = (
 
 
 # Create the complete reflection graph
-reflexion_app = create_reflection_graph(assistant_graph, judge_graph)
-reflexion_app = reflexion_app.compile()
+reflection_app = create_reflection_graph(assistant_graph, judge_graph)
+reflection_app = reflection_app.compile()
 
 
 # Example usage
@@ -94,6 +94,6 @@ if __name__ == "__main__":
         }
     ]
 
-    # Process the query through the reflexion system
-    print("Running example with reflexion...")
-    result = reflexion_app.invoke({"messages": example_query})
+    # Process the query through the reflection system
+    print("Running example with reflection...")
+    result = reflection_app.invoke({"messages": example_query})

@@ -14,9 +14,6 @@ authors = [{name = "Harrison Chase"}]
 [tool.setuptools.packages.find]
 where = ["src"]
 
-[tool.uv.sources]
-langgraph-reflexion = { workspace = true }
-
 [dependency-groups]
 dev = [
     "langgraph-reflection",

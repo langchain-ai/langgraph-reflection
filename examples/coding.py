@@ -141,7 +141,7 @@ def create_graphs():
 
 
 if __name__ == "__main__":
-    """Run an example query through the reflexion system."""
+    """Run an example query through the reflection system."""
     example_query = [
         {
             "role": "user",
@@ -149,7 +149,7 @@ if __name__ == "__main__":
         }
     ]
 
-    print("Running example with reflexion...")
-    reflexion_app = create_graphs()
-    result = reflexion_app.invoke({"messages": example_query})
+    print("Running example with reflection...")
+    reflection_app = create_graphs()
+    result = reflection_app.invoke({"messages": example_query})
     print("Result:", result)

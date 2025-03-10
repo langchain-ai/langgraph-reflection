@@ -2,6 +2,14 @@
 
 This prebuilt graph is an agent that uses a reflection-style architecture to check and improve an initial agent's output.
 
+## Installation
+
+```
+pip install langgraph-reflection
+```
+
+## Details
+
 This reflection agent uses two subagents:
 - A "main" agent, which is the agent attempting to solve the users task
 - A "critique" agent, which checks the main agents work and offers any critiques
@@ -56,8 +64,8 @@ judge_graph = StateGraph(MessagesState).add_node(judge_response)...
 
 
 # Create reflection graph that combines assistant and judge
-reflexion_app = create_reflection_graph(assistant_graph, judge_graph)
-result = reflexion_app.invoke({"messages": example_query})
+reflection_app = create_reflection_graph(assistant_graph, judge_graph)
+result = reflection_app.invoke({"messages": example_query})
 ```
 
 ### Code Validation ([examples/coding.py](examples/coding.py))
@@ -100,8 +108,8 @@ def try_running(state: dict) -> dict | None:
 judge_graph = StateGraph(MessagesState).add_node(try_running)...
 
 # Create reflection system that combines code generation and validation
-reflexion_app = create_reflection_graph(assistant_graph, judge_graph)
-result = reflexion_app.invoke({"messages": example_query})
+reflection_app = create_reflection_graph(assistant_graph, judge_graph)
+result = reflection_app.invoke({"messages": example_query})
 ```
 
 The code validation example ensures that generated code is not only syntactically correct but also type-safe and follows best practices through static analysis.
