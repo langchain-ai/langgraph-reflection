@@ -45,7 +45,7 @@ In this example, the reflection agent uses another LLM to judge its output. The 
 Installation:
 
 ```
-pip install langgraph-reflection langchain
+pip install langgraph-reflection langchain openevals
 ```
 
 Example usage:
@@ -56,15 +56,20 @@ assistant_graph = ...
 # Define the judge function that evaluates responses
 def judge_response(state, config):
     """Evaluate the assistant's response using a separate judge model."""
-    judge_model = init_chat_model(...).bind_tools([Finish])
-    response = judge_model.invoke([...])
-    
-    # If the judge called Finish, response is approved
-    if len(response.tool_calls) == 1:
+    evaluator = create_llm_as_judge(   
+        prompt=critique_prompt,
+        model="openai:o3-mini",
+        feedback_key="pass",
+    )
+    eval_result = evaluator(outputs=state["messages"][-1].content, inputs=None)
+
+    if eval_result["score"]:
+        print("✅ Response approved by judge")
         return
     else:
-        # Return judge's critique as a new user message
-        return {"messages": [{"role": "user", "content": response.content}]}
+        # Otherwise, return the judge's critique as a new user message
+        print("⚠️ Judge requested improvements")
+        return {"messages": [{"role": "user", "content": eval_result["comment"]}]}
 
 # Create graphs with reflection
 judge_graph = StateGraph(MessagesState).add_node(judge_response)...

@@ -3,13 +3,15 @@
 Should install:
 
 ```
-pip install langgraph-reflection langchain
+pip install langgraph-reflection langchain openevals
 ```
 """
+
 from langgraph_reflection import create_reflection_graph
 from langchain.chat_models import init_chat_model
 from langgraph.graph import StateGraph, MessagesState, START, END
 from typing import TypedDict
+from openevals.llm import create_llm_as_judge
 
 
 # Define the main assistant model that will generate responses
@@ -46,34 +48,34 @@ Evaluate the response based on these criteria:
 4. Helpfulness - Does it provide actionable and useful information?
 5. Safety - Does it avoid harmful or inappropriate content?
 
-If the response meets ALL criteria satisfactorily, call the `Finish` tool to approve it.
+If the response meets ALL criteria satisfactorily, set pass to True.
 
-If you find ANY issues with the response, do NOT call the Finish tool. Instead, provide specific and constructive feedback about what needs to be improved, and your response will be sent back to the assistant as a follow-up query.
+If you find ANY issues with the response, do NOT set pass to True. Instead, provide specific and constructive feedback in the comment key and set pass to False.
 
-Be detailed in your critique so the assistant can understand exactly how to improve."""
+Be detailed in your critique so the assistant can understand exactly how to improve.
+
+<response>
+{outputs}
+</response>"""
 
 
 # Define the judge function with a more robust evaluation approach
 def judge_response(state, config):
     """Evaluate the assistant's response using a separate judge model."""
-    # Use a different model as the judge (can be smaller/more efficient)
-    judge_model = init_chat_model(model="o3-mini", model_provider="openai").bind_tools(
-        [Finish]
+    evaluator = create_llm_as_judge(
+        prompt=critique_prompt,
+        model="openai:o3-mini",
+        feedback_key="pass",
     )
+    eval_result = evaluator(outputs=state["messages"][-1].content, inputs=None)
 
-    # Create judge prompt with all messages for context
-    response = judge_model.invoke(
-        [{"role": "system", "content": critique_prompt}] + state["messages"]
-    )
-
-    # If the judge called the Finish tool, the response is approved
-    if len(response.tool_calls) == 1:
+    if eval_result["score"]:
         print("✅ Response approved by judge")
         return
     else:
         # Otherwise, return the judge's critique as a new user message
         print("⚠️ Judge requested improvements")
-        return {"messages": [{"role": "user", "content": response.content}]}
+        return {"messages": [{"role": "user", "content": eval_result["comment"]}]}
 
 
 # Define the judge graph
