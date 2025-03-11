@@ -153,6 +153,8 @@ def create_graphs():
     return create_reflection_graph(assistant_graph, judge_graph).compile()
 
 
+reflection_app = create_graphs()
+
 if __name__ == "__main__":
     """Run an example query through the reflection system."""
     example_query = [
@@ -163,6 +165,5 @@ if __name__ == "__main__":
     ]
 
     print("Running example with reflection...")
-    reflection_app = create_graphs()
     result = reflection_app.invoke({"messages": example_query})
     print("Result:", result)

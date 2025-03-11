@@ -10,6 +10,9 @@ pip install langgraph-reflection
 
 ## Details
 
+<div style="display: flex; align-items: flex-start; gap: 20px;">
+<div>
+
 This reflection agent uses two subagents:
 - A "main" agent, which is the agent attempting to solve the users task
 - A "critique" agent, which checks the main agents work and offers any critiques
@@ -22,7 +25,12 @@ The reflection agent has the following architecture:
    - If the critique agent finds something to critique, then the main agent is called again
    - If there is nothing to critique, then the overall reflection agent finishes
 4. Repeat until the overall reflection agent finishes
+</div>
 
+<div>
+<img src="langgraph-reflection.png" alt="Reflection Agent Architecture" width="100"/>
+</div>
+</div>
 
 We make some assumptions about the graphs:
 - The main agent should take as input a list of messages
