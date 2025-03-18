@@ -3,56 +3,16 @@
 Should install:
 
 ```
-pip install langgraph-reflection langchain pyright
+pip install langgraph-reflection langchain openevals pyright
 ```
 """
 
-from typing import TypedDict, Annotated, Literal
-import json
-import os
-import subprocess
-import tempfile
+from typing import TypedDict
 
 from langchain.chat_models import init_chat_model
 from langgraph.graph import StateGraph, MessagesState, START, END
 from langgraph_reflection import create_reflection_graph
-
-
-def analyze_with_pyright(code_string: str) -> dict:
-    """Analyze Python code using Pyright for static type checking and errors.
-
-    Args:
-        code_string: The Python code to analyze as a string
-
-    Returns:
-        dict: The Pyright analysis results
-    """
-    with tempfile.NamedTemporaryFile(suffix=".py", mode="w", delete=False) as temp:
-        temp.write(code_string)
-        temp_path = temp.name
-
-    try:
-        result = subprocess.run(
-            [
-                "pyright",
-                "--outputjson",
-                "--level",
-                "error",  # Only report errors, not warnings
-                temp_path,
-            ],
-            capture_output=True,
-            text=True,
-        )
-
-        try:
-            return json.loads(result.stdout)
-        except json.JSONDecodeError:
-            return {
-                "error": "Failed to parse Pyright output",
-                "raw_output": result.stdout,
-            }
-    finally:
-        os.unlink(temp_path)
+from openevals.code.pyright import create_pyright_evaluator
 
 
 def call_model(state: dict) -> dict:
@@ -111,16 +71,16 @@ def try_running(state: dict) -> dict | None:
     if tc["name"] != "ExtractPythonCode":
         return None
 
-    result = analyze_with_pyright(tc["args"]["python_code"])
+    evaluator = create_pyright_evaluator()
+    result = evaluator(outputs=tc["args"]["python_code"])
     print(result)
-    explanation = result["generalDiagnostics"]
 
-    if result["summary"]["errorCount"]:
+    if not result["score"]:
         return {
             "messages": [
                 {
                     "role": "user",
-                    "content": f"I ran pyright and found this: {explanation}\n\n"
+                    "content": f"I ran pyright and found this: {result['comment']}\n\n"
                     "Try to fix it. Make sure to regenerate the entire code snippet. "
                     "If you are not sure what is wrong, or think there is a mistake, "
                     "you can ask me a question rather than generating code",
