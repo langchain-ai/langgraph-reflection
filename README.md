@@ -83,7 +83,7 @@ This example demonstrates how to use the reflection agent to validate and improv
 Installation:
 
 ```
-pip install langgraph-reflection langchain pyright
+pip install langgraph-reflection langchain openevals pyright
 ```
 
 Example usage:
@@ -98,14 +98,15 @@ def try_running(state: dict) -> dict | None:
     code = extract_python_code(state['messages'])
     
     # Run Pyright analysis
-    result = analyze_with_pyright(code)
+    evaluator = create_pyright_evaluator()
+    result = evaluator(outputs=code)
     
-    if result['summary']['errorCount']:
+    if not result['score']:
         # If errors found, return critique for the main agent
         return {
             "messages": [{
                 "role": "user",
-                "content": f"I ran pyright and found this: {result['generalDiagnostics']}\n\n"
+                "content": f"I ran pyright and found this: {result['comment']}\n\n"
                           "Try to fix it..."
             }]
         }
