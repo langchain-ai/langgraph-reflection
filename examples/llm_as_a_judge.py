@@ -31,13 +31,6 @@ assistant_graph = (
 )
 
 
-# Define the tool that the judge can use to indicate the response is acceptable
-class Finish(TypedDict):
-    """Tool for the judge to indicate the response is acceptable."""
-
-    finish: bool
-
-
 # Define a more detailed critique prompt with specific evaluation criteria
 critique_prompt = """You are an expert judge evaluating AI responses. Your task is to critique the AI assistant's latest response in the conversation below.
 
